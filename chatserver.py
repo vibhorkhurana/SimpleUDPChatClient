@@ -1,28 +1,14 @@
 #!/usr/bin/python
 
 import socket
-#import pynotify
-
+from select import select
+serv=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+serv.bind(('',6667))
 def run():
-	serv=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-	#SERV = raw_input("your ip : ")
-	serv.bind(('',6667))
-
-	people={}
 	while 1:
-		data,addr=serv.recvfrom(65536)
-
-		if addr[0] not in people.keys():
-			if data not in people.values():
-				people[addr[0]] = data
-			else:
-				people[addr[0]] = data + "_"
-			continue
-		data = data.strip()
-		if data != '':
-			print addr,": ",data
-			for i in people:
-				serv.sendto(people[addr[0]]+": "+data,(i,6668))
+		data,addr=serv.recvfrom(6556)
+		print "Data Received: "+data
+		st=raw_input("Enter Data to Send: ")
+		serv.sendto(st,('127.0.1.1',6556))
 	serv.close()
-if __name__ == "__main__":
-	run()
+run()
